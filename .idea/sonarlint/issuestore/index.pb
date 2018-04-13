@@ -27,3 +27,7 @@ C
 demo/.gitignore,8/4/84bf24e05a8e483c2e81f1266cd4daa66e06ece9
 D
 demo/channelDemo2.go,4/3/43134cf2fab49ca7332cab6405b9fe0c99fbf04c
+S
+#.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
+>
+demo/ioDemo.go,2/3/231af6ba65f5018b84fa4a3ee7c2035f938bc033

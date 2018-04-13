@@ -1,30 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io/ioutil"
+	"strings"
+	"os"
+)
 
 var commandList = []string{"ls", "cd", "rm", "cp", "mv"}
 
 var (
-	command, s string
+	command string
+	targetPosition  string
 	currentLocate = "/Users/finup123"
-	i          int
-	f          float32
-	input      = "56.12 / 5212 / Go"
-	format     = "%f / %d / %s"
+	beforeLocate  = currentLocate
 )
 
 func main() {
 	for {
 		fmt.Println("enter command!: ")
-		fmt.Scanln(&command)
+		fmt.Scanln(&command,&targetPosition)
 		fmt.Println("The command you typed is :", command)
 		fmt.Println("This command ", If(checkCommand(command), "is valid", "is not valid"))
 		switch command {
 		case "ls":
-			
-			println("ls")
+			lsLogic(currentLocate)
 		case "cd":
-			println("cd")
+			cdLogic()
 		case "rm":
 			println("rm")
 		case "cp":
@@ -32,19 +34,51 @@ func main() {
 		case "mv":
 			println("mv")
 		}
-		fmt.Sscanf(input, format, &f, &i, &s)
-		fmt.Println("From the string we read: ", f, i, s)
 	}
 }
+func cdLogic() {
+	if targetPosition == ".." {
+		if currentLocate == "/" {
+			beforeLocate = currentLocate
+			currentLocate = "/"
+		} else {
+			beforeLocate = currentLocate
+			currentLocate = currentLocate[:strings.LastIndex(currentLocate, "/")]
+		}
+	} else if targetPosition == "-" {
+		currentLocate, beforeLocate = beforeLocate, currentLocate
+	} else {
+		tempLocate := currentLocate
+		tempLocate = tempLocate + "/" + targetPosition
+		stat, err := os.Stat(tempLocate)
+		if err != nil {
+			return
+		}
+		if stat.IsDir() {
+			currentLocate, beforeLocate = beforeLocate, currentLocate
+			tempLocate, currentLocate = currentLocate, tempLocate
+		}
 
-func lsLogic() string{
+	}
 
+	println("Now current location is ", currentLocate)
+}
+
+func lsLogic(fileName string) string {
+	dir, _ := ioutil.ReadDir(fileName)
+	for _, file := range dir {
+		if file.IsDir() {
+			println(file.Name(), " is a dir")
+		} else {
+			println(file.Name(), " is a file")
+		}
+	}
 	return ""
 }
 
 func checkCommand(command string) (result bool) {
 	for _, value := range commandList {
-		if value == command {
+		if strings.HasPrefix(command, value) {
 			result = true
 			return
 		}
